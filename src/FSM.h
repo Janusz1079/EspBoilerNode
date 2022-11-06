@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Buffer.h"
-
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 class Context;
 class State
@@ -39,9 +40,14 @@ class Context
     ISR_Timer1
   };
   isrFlags ISR_REGISTER;
+  OneWire *oneWire;
+  DallasTemperature *sensors;
+  DeviceAddress sensor1;
+  DeviceAddress sensor2;
   Buffer *sensor1_buff;    // Czujnik temperatury wody kotła
   Buffer *sensor2_buff;    // Czujnik termperatur wody powrotu
   
+  void printAddress(DeviceAddress deviceAddres);
   void readSensorsData(){};
   void sendSensorsData(){};
   void transitionToState(State *state);

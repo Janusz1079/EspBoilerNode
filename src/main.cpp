@@ -2,6 +2,7 @@
 #include "FSM.h"
 
 
+
 Context *FSM = new Context (new Idle);
 hw_timer_t *timer1 = NULL;
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
@@ -46,13 +47,31 @@ void FSM_loop ()
 
 void setup() {
   // put your setup code here, to run once:
-   Serial.begin(921600);
-   delay(1000);
-
+  Serial.begin(921600);
+  delay(1000);
   timer1 = timerBegin(0, 80, true);
   timerAttachInterrupt(timer1, &onTimer1, true);
-   timerAlarmWrite(timer1, 5000000, true);
-   timerAlarmEnable(timer1);
+  timerAlarmWrite(timer1, 5000000, true);
+  timerAlarmEnable(timer1);
+
+  // sensors.begin();
+  // if(sensors.getAddress(FSM->sensor1, 0))
+  // {
+  //   Serial.print("\nFound device ");
+  //   Serial.print("with address: ");
+  //   FSM->printAddress(FSM->sensor1);
+
+  //   Serial.println();
+  // }
+
+  // if(sensors.getAddress(FSM->sensor2, 1))
+  // {
+  //   Serial.print("\nFound device ");
+  //   Serial.print("with address: ");
+  //   FSM->printAddress(FSM->sensor2);
+  //   Serial.println();
+  // }
+
  }
 int i=0;
 void loop() {

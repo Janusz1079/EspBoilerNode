@@ -2,6 +2,7 @@
 #include "FSM.h"
 
 #define quote(x) #x
+#define ONE_WIRE_BUS 4
 
 void State::setContext(Context *context)
 {
@@ -9,12 +10,35 @@ void State::setContext(Context *context)
 }
 
 //----- Class CONTEXT definition -----
-Context::Context(State* state) : state_(nullptr), sensor1_buff(nullptr), sensor2_buff(nullptr)
+Context::Context(State* state) : state_(nullptr), oneWire(nullptr), sensors(nullptr), sensor1_buff(nullptr), sensor2_buff(nullptr)
 {
+    DeviceAddress sensor1;
+    DeviceAddress sensor2;
+    oneWire = new OneWire(ONE_WIRE_BUS);
+    sensors = new DallasTemperature(oneWire);
     //ISR_INTERRUPT flags;
     ISR_REGISTER = ISR_ZERO;
     sensor1_buff = new Buffer(); 
     sensor2_buff = new Buffer();
+
+    this->sensors->begin();
+    if(this->sensors->getAddress(this->sensor1, 0))
+    {
+        Serial.print("\nFound device ");
+        Serial.print("with address: ");
+        this->printAddress(this->sensor1);
+
+        Serial.println();
+    }
+
+    if(this->sensors->getAddress(this->sensor2, 1))
+    {
+        Serial.print("\nFound device ");
+        Serial.print("with address: ");
+        this->printAddress(this->sensor2);
+        Serial.println();
+    }
+
     this->transitionToState(state);
 }
 Context::~Context()
@@ -22,6 +46,16 @@ Context::~Context()
     delete state_;
 
 }
+
+void Context::printAddress(DeviceAddress deviceAddress) 
+{
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        if (deviceAddress[i] < 16) Serial.print("0");
+            Serial.print(deviceAddress[i], HEX);
+    }
+}    
+
 void Context::transitionToState(State* state)
 {
     if(this->state_ != nullptr)
@@ -95,14 +129,15 @@ void DataRead::entryFunction()
 void DataRead::isrTimer()
 {
     Serial.print(" isrTimer() DATAREAD state -> ");
-   this->context_->ISR_REGISTER = this->context_->ISR_ZERO;
-   //Serial.println(this->context_->ISR_REGISTER);
-   //this->context_->readSensorsData();
-   this->context_->temptemp+=3;
-   this->context_->sensor1_buff->push(this->context_->temptemp);
-   this->context_->temptemp+=5;
-   this->context_->sensor2_buff->push(this->context_->temptemp);
-   this->context_->transitionToState(new Idle);
+    float temp1 = 0.0;
+    float temp2 = 0.0;
+    this->context_->sensors->requestTemperatures();
+    temp1 = this->context_->sensors->getTempC(this->context_->sensor1);
+    temp2 = this->context_->sensors->getTempC(this->context_->sensor2);
+    this->context_->ISR_REGISTER = this->context_->ISR_ZERO;
+    this->context_->sensor1_buff->push(temp1);
+    this->context_->sensor2_buff->push(temp2);
+    this->context_->transitionToState(new Idle);
 }
 
 void DataRead::isrBufferFull()
