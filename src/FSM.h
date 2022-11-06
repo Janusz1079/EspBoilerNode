@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include "Buffer.h"
+
 
 class Context;
 class State
@@ -7,11 +9,17 @@ class State
   Context *context_;
 
   public:
-  virtual ~State();
+  virtual ~State(){}
 
   void setContext(Context *context);
-  virtual void IsrTimer() = 0;
-  virtual void IsrBufferFull() = 0;
+  
+
+  virtual void entryFunction();
+  virtual void isrTimer();
+  virtual void isrBufferFull();
+  virtual void isrBufferEmpty();
+  virtual void exitFunction();
+  virtual void loopFunction();
 };
 
 class Context
@@ -22,32 +30,83 @@ class Context
   public:
   Context (State *state);
   ~Context();
+  float temptemp;
+  enum isrFlags : uint8_t
+  {
+    ISR_ZERO,
+    ISR_BufferFull, 
+    ISR_BufferEmpty, 
+    ISR_Timer1
+  };
+  isrFlags ISR_REGISTER;
+  Buffer *sensor1_buff;    // Czujnik temperatury wody kotła
+  Buffer *sensor2_buff;    // Czujnik termperatur wody powrotu
+  
+  void readSensorsData(){};
+  void sendSensorsData(){};
   void transitionToState(State *state);
-  void IsrTimer();
-  void IsrBufferFull();
+  void entryFunction();
+  void isrTimer();
+  void isrBufferFull();
+  void isrBufferEmpty();
+  void loopFunction();
+  void exitFunction();
+  //void checkBuffers();
 };
 
 class Idle : public State
 {
-  void IsrTimer();
-  void IsrBufferFull();
+  void entryFunction();
+  void isrTimer();
+  void isrBufferFull();
+  void isrBufferEmpty(){}
+  void loopFunction(){}
+  void exitFunction();
 };
 
 class DataRead : public State
 {
-  void IsrTimer();
-  void IsrBufferFull();
+  void entryFunction();
+  void isrTimer();
+  void isrBufferFull();
+  void isrBufferEmpty(){}
+  void loopFunction(){}
+  void exitFunction();
 };
-
+/*
 class DataReceive : public State
 {
-  void IsrTimer();
-  void IsrBufferFull();
+  void entryFunction();
+  void isrTimer();
+  void isrBufferFull();
+  void isrBufferEmpty();
+  void exitFunction();
 };
-
+*/
 class DataSend : public State
 {
-  void IsrTimer();
-  void IsrBufferFull();
+  void entryFunction();
+  void isrTimer(){}
+  void isrBufferFull();
+  void isrBufferEmpty(){}
+  void loopFunction(){}
+  void exitFunction();
 };
 
+class Sensor1 : public State
+{
+  void entryFunction();
+  void isrTimer(){}
+  void isrBufferFull(){}
+  void isrBufferEmpty(){}
+  void exitFunction(){}
+};
+
+class Sensor2 : public State
+{
+  void entryFunction();
+  void isrTimer(){}
+  void isrBufferFull(){}
+  void isrBufferEmpty(){}
+  void exitFunction(){}
+};

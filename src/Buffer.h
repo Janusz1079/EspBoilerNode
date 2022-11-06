@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #define BUFF_SIZE  10
 
 class Buffer
@@ -6,14 +5,14 @@ class Buffer
   private:
   uint8_t size_;
   uint8_t head_, tail_;
-  bool isFullFlag;
-  bool isEmptyFlag;
+  
   float *tab;
 
   public:
   Buffer();
   ~Buffer();
-
+  bool isFullFlag;
+  bool isEmptyFlag;
   void push(float);
   float pull();
   bool isFull();
