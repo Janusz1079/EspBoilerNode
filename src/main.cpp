@@ -1,8 +1,6 @@
 #include <Arduino.h>
 #include "FSM.h"
 
-
-
 Context *FSM = new Context (new Idle);
 hw_timer_t *timer1 = NULL;
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
@@ -11,7 +9,6 @@ void IRAM_ATTR onTimer1 ()
 {
   if(FSM->ISR_REGISTER == FSM->ISR_ZERO)
     FSM->ISR_REGISTER = FSM->ISR_Timer1;
-  //Serial.println(" * Przerwanie od Timer1 *");
 }
 
 void FSM_loop ()
@@ -45,15 +42,42 @@ void FSM_loop ()
 
 }
 
-void setup() {
-  // put your setup code here, to run once:
+void setup() 
+{
   Serial.begin(921600);
   delay(1000);
   timer1 = timerBegin(0, 80, true);
   timerAttachInterrupt(timer1, &onTimer1, true);
-  timerAlarmWrite(timer1, 5000000, true);
+  timerAlarmWrite(timer1, 2000000, true);
   timerAlarmEnable(timer1);
 
+  WiFi.mode(WIFI_STA);
+  FSM->listNetworks();
+  WiFi.begin(WIFI_SSID_Gora, WIFI_PASSWORD_Gora);
+
+  while(WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+
+  FSM->sensors->begin();
+    if(FSM->sensors->getAddress(FSM->sensor1, 0))
+    {
+        Serial.print("\nFound device ");
+        Serial.print("with address: ");
+        FSM->printAddress(FSM->sensor1);
+
+        Serial.println();
+    }
+
+    if(FSM->sensors->getAddress(FSM->sensor2, 1))
+    {
+        Serial.print("\nFound device ");
+        Serial.print("with address: ");
+        FSM->printAddress(FSM->sensor2);
+        Serial.println();
+    }
   // sensors.begin();
   // if(sensors.getAddress(FSM->sensor1, 0))
   // {
@@ -73,12 +97,10 @@ void setup() {
   // }
 
  }
-int i=0;
-void loop() {
-  
-  
-  //put your main code here, to run repeatedly:
-  
+//int i=0;
+void loop() 
+{
+ 
   FSM_loop();
   delay(500);
 }

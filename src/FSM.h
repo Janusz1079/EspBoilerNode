@@ -2,6 +2,9 @@
 #include "Buffer.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <WiFi.h>
+#include "WiFiCredentials.h"
+
 
 class Context;
 class State
@@ -14,7 +17,7 @@ class State
 
   void setContext(Context *context);
   
-
+  
   virtual void entryFunction();
   virtual void isrTimer();
   virtual void isrBufferFull();
@@ -46,7 +49,10 @@ class Context
   DeviceAddress sensor2;
   Buffer *sensor1_buff;    // Czujnik temperatury wody kotła
   Buffer *sensor2_buff;    // Czujnik termperatur wody powrotu
+  //WiFiClient *client;
   
+  void sendHTTP(float x, float y);
+  void listNetworks();
   void printAddress(DeviceAddress deviceAddres);
   void readSensorsData(){};
   void sendSensorsData(){};

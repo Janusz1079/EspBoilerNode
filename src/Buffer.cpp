@@ -7,8 +7,6 @@ Buffer::Buffer() : size_(BUFF_SIZE), head_(0), tail_(0), tab(nullptr)
   tab = new float [size_];
   isFullFlag = false;
   isEmptyFlag = true;
-  //ISR_BUFFER_EMPTY = true;
-  //ISR_BUFFER_FULL = false;
 }
 
 Buffer::~Buffer()
@@ -22,7 +20,6 @@ void Buffer::push(float data)
   {
     tab[head_] = data;
     isEmptyFlag = false;
-    //ISR_BUFFER_EMPTY = false;
     head_ = (head_+1)%size_;
   }
   isFull();
@@ -35,7 +32,6 @@ float Buffer::pull()
   {
     temp = tab[tail_];
     isFullFlag = false;
-    //ISR_BUFFER_FULL = false;
     tail_ = (tail_+1)%size_;
   }
   isEmpty();
@@ -49,7 +45,6 @@ bool Buffer::isFull()
   {
     head_ = temp_t;
     isFullFlag = true;
-    //SR_BUFFER_FULL = true;
     return 1;
   }
   isFullFlag = false;
@@ -75,8 +70,6 @@ bool Buffer::isEmpty()
   if(head_==tail_) 
   {
     isEmptyFlag = true;
-    //ISR_BUFFER_EMPTY = true;
-    //tail_++;
     return 1;
   }
   return 0;
