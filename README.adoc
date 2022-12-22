@@ -1,0 +1,48 @@
+= CHBCnode - Central Heating Boiler Controler  
+
+This example uses a ESP-WROOM-32  board with two temperature sensros based on the DS18B20. 
+CHBCnode sending data to Web Server runing on RaspberryPi using:
+* Appache, PHP, MySQL & PHPMySQL 
+Node code was created using State Designed Pattern for future upgrades.
+
+More info about installing Web Server:
+* https://gist.github.com/ajumalp/73acb27212a13ac2b75b942afe6d0c24
+* https://profitserver.net/knowledge-base/web-server-setup-linux
+
+== General information
+The main reason for this project was to limit the inspection frequency for the boiler 
+while maintaining constant supervision. 
+CHBCnode is an addition to the simple airflow regulator Honeywell FR-124 3/4,
+responsible for obtaining the preset temperature of the boiler. 
+
+== Setup
+=== Connetion to ESP-WROOM-32
+
+* 1-Wire communication line connected to *D4* pin.
+
+=== PlatformIO and Visual Studio Code
+
+This project uses https://platformio.org/[PlatformIO] as development environment. It is available
+as a https://platformio.org/platformio-ide[extension for Visual Studio Code].
+
+Open the project folder in Visual Studio Code with an activated PlatformIO extension
+and you should be able to build and flash the project onto a connected ESP-WROOM-32 board.
+
+=== Configuration
+
+==== *Buffer.h* 
+
+NOTE: define BUFF_SIZE, default BUFF_SIZE = 10
+
+*BUFF_SIZE* is related to the timer interrupt frequency that triggers the reading sequence from sensors 
+(with BUFF_SIZE = 10, the timer interrupts every 5s will be able to send an average value of a temperature 
+every 50s).
+This method reduces rapid changes (noise) caused by the thermal inertia of temperature sensors and the boiler.
+
+==== *WiFiCredentials.h*
+
+Adjust the values for *WIFI_SSID*, *WIFI_PASSWOARD*, *SERVER_ADDRES*, *serverName*, *apiKey*, *ipServer* according to you network settings and server configuration.
+
+
+== Links
+* https://refactoring.guru/design-patterns/state/cpp/example

@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include "FSM.h"
 
-#define quote(x) #x
-#define ONE_WIRE_BUS 4
+//#define quote(x) #x
 
-IPAddress ipServer(192, 168, 0, 106);
+
+//IPAddress ipServer(192, 168, 0, 106);
 WiFiClient client;
 
 void State::setContext(Context *context)
