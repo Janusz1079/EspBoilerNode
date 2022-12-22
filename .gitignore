@@ -31,3 +31,4 @@ _build/
 
 # Test log files
 *.log
+.DS_Store
