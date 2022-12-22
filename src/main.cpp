@@ -53,7 +53,7 @@ void setup()
 
   WiFi.mode(WIFI_STA);
   FSM->listNetworks();
-  WiFi.begin(WIFI_SSID_Gora, WIFI_PASSWORD_Gora);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   while(WiFi.status() != WL_CONNECTED)
   {
@@ -78,26 +78,8 @@ void setup()
         FSM->printAddress(FSM->sensor2);
         Serial.println();
     }
-  // sensors.begin();
-  // if(sensors.getAddress(FSM->sensor1, 0))
-  // {
-  //   Serial.print("\nFound device ");
-  //   Serial.print("with address: ");
-  //   FSM->printAddress(FSM->sensor1);
-
-  //   Serial.println();
-  // }
-
-  // if(sensors.getAddress(FSM->sensor2, 1))
-  // {
-  //   Serial.print("\nFound device ");
-  //   Serial.print("with address: ");
-  //   FSM->printAddress(FSM->sensor2);
-  //   Serial.println();
-  // }
-
  }
-//int i=0;
+
 void loop() 
 {
  
