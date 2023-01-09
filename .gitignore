@@ -34,4 +34,4 @@ _build/
 .DS_Store
 
 # Ignore credential file
-src/WiFiCredentials.h
+src/WiFiCredentials.hsrc/WiFiCredentials.h
